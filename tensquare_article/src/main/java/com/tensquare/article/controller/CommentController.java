@@ -10,26 +10,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * @author JinLu
- * @date 2020/1/6 16:56
- */
 @RestController
 @RequestMapping("comment")
 public class CommentController {
+
     @Autowired
     private CommentService commentService;
 
     @Autowired
     private RedisTemplate redisTemplate;
 
-    /**
-     * PUT /thumbup/{commentId}
-     * 根据文章id点赞评论
-     *
-     * @param commentId
-     * @return
-     */
+    //PUT /comment/thumbup/{commentId} 根据评论id点赞评论
     @RequestMapping(value = "thumbup/{commentId}", method = RequestMethod.PUT)
     public Result thumbup(@PathVariable String commentId) {
         //把用户点赞信息保存到Redis中
@@ -59,81 +50,52 @@ public class CommentController {
 
     }
 
-    /**
-     * GET /article/{commentId}
-     * 根据id查询文章评论数量
-     *
-     * @param commentId
-     * @return
-     */
-    @RequestMapping(value = "article/commentId", method = RequestMethod.GET)
-    public Result findByArticleId(@PathVariable String commentId) {
-        List<Comment> list = commentService.findByArticleId(commentId);
+    //GET /comment/article/{articleId} 根据文章id查询文章评论
+    @RequestMapping(value = "article/{articleId}", method = RequestMethod.GET)
+    public Result findByArticleId(@PathVariable String articleId) {
+        List<Comment> list = commentService.findByArticleId(articleId);
         return new Result(true, StatusCode.OK, "查询成功", list);
     }
 
-    /**
-     * DELETE /comment/{commentId}
-     *
-     * @param commentId
-     * @return
-     */
-    @RequestMapping(value = "{commentId}", method = RequestMethod.DELETE)
-    public Result deleteById(@PathVariable String commentId) {
-        commentService.deleteById(commentId);
-        return new Result(true, StatusCode.OK, "删除成功");
+    //GET /comment 查询所有评论
+    @RequestMapping(method = RequestMethod.GET)
+    public Result findAll() {
+        List<Comment> list = commentService.findAll();
+
+        return new Result(true, StatusCode.OK, "查询成功", list);
     }
 
-    /**
-     * PUT /{commentId}
-     * 修改评论
-     *
-     * @param commentId
-     * @param comment
-     * @return
-     */
-    @RequestMapping(value = "{commentId}", method = RequestMethod.PUT)
-    public Result updateById(@PathVariable String commentId, @RequestBody Comment comment) {
-        comment.set_id(commentId);
-        commentService.updateById(comment);
-        return new Result(true, StatusCode.OK, "修改成功");
-    }
 
-    /**
-     * POST /comment
-     * 添加评论
-     *
-     * @param comment
-     * @return
-     */
-    @RequestMapping(method = RequestMethod.POST)
-    public Result save(@RequestBody Comment comment) {
-        commentService.save(comment);
-        return new Result(true, StatusCode.OK, "添加成功");
-    }
-
-    /**
-     * GET /{commentId}
-     * 根据id查询评论
-     *
-     * @param commentId
-     * @return
-     */
+    //GET /comment/{commentId} 根据评论id查询评论数据
     @RequestMapping(value = "{commentId}", method = RequestMethod.GET)
     public Result findById(@PathVariable String commentId) {
         Comment comment = commentService.findById(commentId);
         return new Result(true, StatusCode.OK, "查询成功", comment);
     }
 
-    /**
-     * GET /comment
-     * 查询所有评论
-     *
-     * @return
-     */
-    @RequestMapping(method = RequestMethod.GET)
-    public Result findAll() {
-        List<Comment> list = commentService.findAll();
-        return new Result(true, StatusCode.OK, "查询成功", list);
+    //POST /comment 新增评论
+    @RequestMapping(method = RequestMethod.POST)
+    public Result save(@RequestBody Comment comment) {
+        commentService.save(comment);
+        return new Result(true, StatusCode.OK, "新增成功");
     }
+
+    //PUT /comment/{commentId} 修改评论
+    @RequestMapping(value = "{commentId}", method = RequestMethod.PUT)
+    public Result updateById(@PathVariable String commentId, @RequestBody Comment comment) {
+        //设置评论主键
+        comment.set_id(commentId);
+        //执行修改
+        commentService.updateById(comment);
+
+        return new Result(true, StatusCode.OK, "修改成功");
+    }
+
+    //DELETE /comment/{commentId} 根据id删除评论
+    @RequestMapping(value = "{commentId}", method = RequestMethod.DELETE)
+    public Result deleteById(@PathVariable String commentId) {
+        commentService.deleteById(commentId);
+        return new Result(true, StatusCode.OK, "删除成功");
+    }
+
 }

@@ -2,13 +2,10 @@ package com.tensquare.article.pojo;
 
 import org.springframework.data.annotation.Id;
 
+import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @author JinLu
- * @date 2020/1/6 14:24
- */
-public class Comment {
+public class Comment implements Serializable {
     @Id
     private String _id;
     private String articleid;
@@ -72,5 +69,18 @@ public class Comment {
 
     public void setThumbup(Integer thumbup) {
         this.thumbup = thumbup;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "_id='" + _id + '\'' +
+                ", articleid='" + articleid + '\'' +
+                ", content='" + content + '\'' +
+                ", userid='" + userid + '\'' +
+                ", parentid='" + parentid + '\'' +
+                ", publishdate=" + publishdate +
+                ", thumbup=" + thumbup +
+                '}';
     }
 }

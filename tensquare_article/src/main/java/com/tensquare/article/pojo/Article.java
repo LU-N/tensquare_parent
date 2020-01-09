@@ -7,9 +7,6 @@ import com.baomidou.mybatisplus.enums.IdType;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @author JinLu
- */
 @TableName("tb_article")
 public class Article implements Serializable {
 
